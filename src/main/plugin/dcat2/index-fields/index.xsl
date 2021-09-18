@@ -248,8 +248,9 @@
           </resolutionScaleDenominator>
         </xsl:for-each>
 
-
-
+        <xsl:for-each select="dct:spatial">
+          <geom><xsl:value-of select="dct:Location"></xsl:value-of></geom>
+        </xsl:for-each>
 
         <xsl:variable name="overviews"
                       select="dcat:distribution/*[dct:format/*/skos:prefLabel = 'WWW:OVERVIEW' and dcat:accessURL != '']"/>
