@@ -6,7 +6,7 @@
                 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
                 exclude-result-prefixes="#all">
 
-  <xsl:import href="distrubution-mapping.xsl">
+  <xsl:import href="distribution-mapping.xsl">
 
   </xsl:import>
   <xsl:output method="xml" indent="yes"/>

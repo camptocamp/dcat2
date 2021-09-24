@@ -42,7 +42,7 @@
 
   <xsl:import href="common/index-utils.xsl"/>
   <xsl:import href="../layout/utility-tpl-multilingual.xsl"/>
-  <xsl:import href="../convert/distrubution-mapping.xsl"/>
+  <xsl:import href="../convert/distribution-mapping.xsl"/>
 
   <xsl:output method="xml" indent="yes"/>
 
