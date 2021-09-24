@@ -103,20 +103,21 @@
 
                 <xsl:for-each select="distribution">
                     <dcat:distribution>
-                        <dcat:Distribution>
-                            <dct:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
-                                <xsl:value-of select="./title"/>
-                            </dct:description>
-                            <dcat:accessURL>
-                                <xsl:value-of select="./accessURL"/>
-                            </dcat:accessURL>
-                            <dcat:mediaType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
-                                <xsl:value-of select="./mediaType"/>
-                            </dcat:mediaType>
-                            <dct:format rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
-                                <xsl:value-of select="./format"/>
-                            </dct:format>
-                        </dcat:Distribution>
+                        <dct:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+                            <xsl:value-of select="./title"/>
+                        </dct:title>
+                        <dct:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+                            <xsl:value-of select="./title"/>
+                        </dct:description>
+                        <dcat:accessURL>
+                            <xsl:value-of select="./accessURL"/>
+                        </dcat:accessURL>
+                        <dcat:mediaType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+                            <xsl:value-of select="./mediaType"/>
+                        </dcat:mediaType>
+                        <dct:format rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+                            <xsl:value-of select="lower-case(./format)"/>
+                        </dct:format>
                     </dcat:distribution>
                 </xsl:for-each>
 
