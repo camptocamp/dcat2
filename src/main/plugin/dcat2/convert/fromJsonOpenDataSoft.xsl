@@ -6,6 +6,9 @@
                 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
                 exclude-result-prefixes="#all">
 
+  <xsl:import href="distrubution-mapping.xsl">
+
+  </xsl:import>
   <xsl:output method="xml" indent="yes"/>
   <xsl:strip-space elements="*"/>
 
@@ -99,17 +102,21 @@
         <xsl:if test="metas/records_count > 0">
           <xsl:call-template name="distribution">
             <xsl:with-param name="format">csv</xsl:with-param>
+            <xsl:with-param name="fields"><xsl:copy-of select="fields"></xsl:copy-of></xsl:with-param>
           </xsl:call-template>
           <xsl:call-template name="distribution">
             <xsl:with-param name="format">json</xsl:with-param>
+            <xsl:with-param name="fields"><xsl:copy-of select="fields"></xsl:copy-of></xsl:with-param>
           </xsl:call-template>
           <xsl:if test="count(features[. = 'geo']) > 0">
             <xsl:call-template name="distribution">
               <xsl:with-param name="format">geojson</xsl:with-param>
+              <xsl:with-param name="fields"><xsl:copy-of select="fields"></xsl:copy-of></xsl:with-param>
             </xsl:call-template>
             <xsl:if test="number(records_count)  &lt; 5000">
               <xsl:call-template name="distribution">
-                <xsl:with-param name="format">shp</xsl:with-param>
+                <xsl:with-param name="format">shapefile</xsl:with-param>
+                <xsl:with-param name="fields"><xsl:copy-of select="fields"></xsl:copy-of></xsl:with-param>
               </xsl:call-template>
             </xsl:if>
           </xsl:if>
@@ -145,21 +152,29 @@
 
   <xsl:template name="distribution">
     <xsl:param name="format" />
+    <xsl:param name="fields" />
+    <xsl:variable name="description">
+      <xsl:for-each select="$fields/fields">
+        <xsl:value-of select="concat('- *', label, '* : ', name, '[', type, ']\n')" />
+      </xsl:for-each>
+    </xsl:variable>
+
     <dcat:distribution>
-      <dcat:Distribution>
-        <dct:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
-          <xsl:value-of select="concat($format, 'Format')"/>
-        </dct:description>
-        <dcat:accessURL>
-          <xsl:value-of select="concat(nodeUrl, '/explore/dataset/', datasetid, '/download?format=', $format, '&amp;timezone=Europe/Berlin&amp;use_labels_for_header=false')" />
-        </dcat:accessURL>
-        <dcat:mediaType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
-          <xsl:value-of select="$format"/>
-        </dcat:mediaType>
-        <dct:format rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
-          <xsl:value-of select="$format"/>
-        </dct:format>
-      </dcat:Distribution>
+      <dct:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+        <xsl:value-of select="$description"/>
+      </dct:description>
+      <dct:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+        <xsl:value-of select="concat($format, ' Format')"/>
+      </dct:title>
+      <dcat:accessURL>
+        <xsl:value-of select="concat(nodeUrl, '/explore/dataset/', datasetid, '/download?format=', $format, '&amp;timezone=Europe/Berlin&amp;use_labels_for_header=false')" />
+      </dcat:accessURL>
+      <dcat:mediaType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+        <xsl:value-of select="$format-mimetype-mapping/entry[format=lower-case($format)]/mimetype"/>
+      </dcat:mediaType>
+      <dct:format rdf:datatype="http://www.w3.org/2001/XMLSchema#string">
+        <xsl:value-of select="$format"/>
+      </dct:format>
     </dcat:distribution>
   </xsl:template>
 
