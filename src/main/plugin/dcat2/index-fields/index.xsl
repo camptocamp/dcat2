@@ -42,6 +42,7 @@
 
   <xsl:import href="common/index-utils.xsl"/>
   <xsl:import href="../layout/utility-tpl-multilingual.xsl"/>
+  <xsl:import href="../convert/distribution-mapping.xsl"/>
 
   <xsl:output method="xml" indent="yes"/>
 
@@ -248,13 +249,31 @@
           </resolutionScaleDenominator>
         </xsl:for-each>
 
-
-
-
+        <!--Overview-->
         <xsl:variable name="overviews"
                       select="dcat:distribution/*[dct:format/*/skos:prefLabel = 'WWW:OVERVIEW' and dcat:accessURL != '']"/>
         <xsl:copy-of select="gn-fn-index:add-field('hasOverview', if (count($overviews) > 0) then 'true' else 'false')"/>
 
+        <xsl:for-each select="dcat:distribution">
+          <xsl:variable name="format" select="dct:format"></xsl:variable>
+          <xsl:copy-of select="gn-fn-index:add-field('format', $format)"/>
+          <xsl:variable name="protocol" select="$format-mimetype-mapping/entry[format=$format]/protocol"/>
+          <xsl:variable name="linkName" select="dct:title"/>
+          <xsl:variable name="mediaType" select="dcat:mediaType"/>
+          <xsl:variable name="description" select="dct:description"/>
+          <xsl:variable name="url" select="dcat:accessURL"/>
+
+          <link type="object">{
+            "protocol":"<xsl:value-of select="gn-fn-index:json-escape($protocol)"/>",
+            "url":"<xsl:value-of select="gn-fn-index:json-escape($url)"/>",
+            "name":"<xsl:value-of select="$linkName"/>",
+            "format":"<xsl:value-of select="$format"/>",
+            "mediaType":"<xsl:value-of select="$mediaType"/>",
+            "description":"<xsl:value-of select="gn-fn-index:json-escape($description)"/>"
+            }
+          </link>
+
+        </xsl:for-each>
 
         <xsl:variable name="isStoringOverviewInIndex"
                       select="true()"/>
@@ -348,7 +367,7 @@
       <!-- TODO: Can be multilingual -->
       <xsl:attribute name="type" select="'object'"/>{
       "organisation":"<xsl:value-of
-      select="gn-fn-index:json-escape($organisationName)"/>",
+            select="gn-fn-index:json-escape($organisationName)"/>",
       "role":"<xsl:value-of select="$role"/>",
       "email":"<xsl:value-of select="gn-fn-index:json-escape($email[1])"/>",
       "website":"<xsl:value-of select="$website"/>",
@@ -396,7 +415,7 @@
       <!-- TODO: Can be multilingual -->
       <xsl:attribute name="type" select="'object'"/>{
       "organisation":"<xsl:value-of
-      select="gn-fn-index:json-escape($organisationName)"/>",
+            select="gn-fn-index:json-escape($organisationName)"/>",
       "role":"<xsl:value-of select="$role"/>",
       "email":"<xsl:value-of select="gn-fn-index:json-escape($email[1])"/>",
       "website":"<xsl:value-of select="$website"/>",
